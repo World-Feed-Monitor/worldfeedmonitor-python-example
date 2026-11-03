@@ -1,6 +1,6 @@
 # World Feed Monitor · Python example
 
-Search the world's news from Python with the [World Feed Monitor](https://worldfeedmonitor.com) REST API.
+Search the world's news from Python with the [World Feed Monitor](https://worldfeedmonitor.com/?utm_source=github) REST API.
 
 World Feed Monitor reads publishers in every country and language, categorises and deduplicates their articles, and serves them through one API. You don't build or maintain any crawling. This repository shows how to use that API from Python: authentication, searching with filters, paging, exporting, and handling errors and rate limits.
 
@@ -10,9 +10,9 @@ This is an example, not an official SDK. Copy the file into your project and cha
 
 ## 1. Create a free account
 
-Sign up at [worldfeedmonitor.com/register](https://worldfeedmonitor.com/register) with an email address, GitHub or Google. No card is needed. **Confirm your email address**: the API answers only after that.
+Sign up at [worldfeedmonitor.com/register](https://worldfeedmonitor.com/register?utm_source=github) with an email address, GitHub or Google. No card is needed. **Confirm your email address**: the API answers only after that.
 
-Want to see the data first? The [API Playground](https://worldfeedmonitor.com/playground) runs searches with no account.
+Want to see the data first? The [API Playground](https://worldfeedmonitor.com/playground?utm_source=github) runs searches with no account.
 
 ## 2. Create API credentials
 
@@ -158,7 +158,7 @@ Successful responses carry no rate-limit headers, so the client can't slow down 
 | Coverage | every country, language and topic |
 | REST API and MCP server | both included |
 
-Every endpoint counts as one request, **metadata included**. If you look up countries or topics often, cache the answers: they change rarely. See your usage in the dashboard. Paid plans raise the request and depth limits; see [pricing](https://worldfeedmonitor.com/#pricing).
+Every endpoint counts as one request, **metadata included**. If you look up countries or topics often, cache the answers: they change rarely. See your usage in the dashboard. Paid plans raise the request and depth limits; see [pricing](https://worldfeedmonitor.com/?utm_source=github#pricing).
 
 ## Development
 
@@ -172,9 +172,9 @@ The tests use `httpx.MockTransport` with responses in the API's documented shape
 
 ## Links
 
-- [API reference](https://worldfeedmonitor.com/docs) and the [OpenAPI document](https://worldfeedmonitor.com/openapi.json)
-- [API Playground](https://worldfeedmonitor.com/playground)
-- [MCP server](https://worldfeedmonitor.com/#mcp) for AI agents
+- [API reference](https://worldfeedmonitor.com/docs?utm_source=github) and the [OpenAPI document](https://worldfeedmonitor.com/openapi.json)
+- [API Playground](https://worldfeedmonitor.com/playground?utm_source=github)
+- [MCP server](https://worldfeedmonitor.com/?utm_source=github#mcp) for AI agents
 - Other examples: [Next.js dashboard](https://github.com/World-Feed-Monitor/worldfeedmonitor-nextjs-example), [MCP research agent](https://github.com/World-Feed-Monitor/worldfeedmonitor-mcp-agent-example)
 
 ## License
