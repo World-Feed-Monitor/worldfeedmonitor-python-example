@@ -64,9 +64,14 @@ def test_search_prints_articles_with_their_links_and_the_page_summary(api, monke
     no_secret_in(out, err)
 
 
+def test_search_sends_topic_and_publisher_under_the_apis_names(api, monkeypatch) -> None:
+    assert run(search_news, monkeypatch, "--topic", "politics", "--publisher", "example-daily-jp") == 0
+    assert dict(api.requests[0].url.params) == {"topic": "politics", "publisher": "example-daily-jp"}
+
+
 def test_latest_asks_for_newest_first(api, monkeypatch, capsys) -> None:
     assert run(latest_news, monkeypatch, "--country", "JP", "--topic", "technology") == 0
-    assert dict(api.requests[0].url.params) == {"sort": "desc", "country": "JP", "macro_category": "technology"}
+    assert dict(api.requests[0].url.params) == {"sort": "desc", "country": "JP", "topic": "technology"}
 
 
 def test_no_results_say_so(api, monkeypatch, capsys) -> None:
@@ -148,4 +153,4 @@ def test_csv_writer_handles_missing_fields() -> None:
     out = io.StringIO()
     export_news.write_csv([{"title": "Undated", "url": "https://x.example", "published_at": None}], out)
     row = next(csv.DictReader(io.StringIO(out.getvalue())))
-    assert row["title"] == "Undated" and row["source"] == "" and row["published_at_utc"] == ""
+    assert row["title"] == "Undated" and row["publisher"] == "" and row["published_at_utc"] == ""

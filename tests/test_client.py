@@ -30,7 +30,7 @@ def test_every_request_carries_basic_auth_with_key_and_secret() -> None:
         wfm.metadata("countries")
 
     assert [r.headers["Authorization"] for r in api.requests] == [AUTH, AUTH]
-    assert str(api.requests[0].url).startswith(API_URL + "/feeds/search")
+    assert str(api.requests[0].url).startswith(API_URL + "/articles/search")
 
 
 def test_wrong_credentials_raise_an_auth_error_that_says_what_to_check() -> None:
@@ -84,7 +84,7 @@ def test_filters_use_the_apis_names_lists_join_with_commas_and_booleans_are_word
         wfm.search(
             keywords="energy prices",
             country=["DE", "FR"],
-            macro_category="politics",
+            topic="politics",
             has_image=True,
             from_date="2026-11-01",
             sort="desc",
@@ -95,7 +95,7 @@ def test_filters_use_the_apis_names_lists_join_with_commas_and_booleans_are_word
     assert dict(api.requests[0].url.params) == {
         "keywords": "energy prices",
         "country": "DE,FR",
-        "macro_category": "politics",
+        "topic": "politics",
         "has_image": "true",
         "from_date": "2026-11-01",
         "sort": "desc",
@@ -119,7 +119,7 @@ def test_latest_is_a_newest_first_search() -> None:
     api = FakeApi()
     with make(api) as wfm:
         wfm.latest(country="JP", topic="technology")
-    assert dict(api.requests[0].url.params) == {"sort": "desc", "country": "JP", "macro_category": "technology"}
+    assert dict(api.requests[0].url.params) == {"sort": "desc", "country": "JP", "topic": "technology"}
 
 
 # --------------------------------------------------------------------- pagination

@@ -27,7 +27,7 @@ CSV_COLUMNS = [
     "published_at",
     "published_timezone",
     "title",
-    "source",
+    "publisher",
     "country",
     "language",
     "topics",
@@ -45,10 +45,10 @@ def write_csv(articles: list[dict[str, Any]], out: TextIO) -> None:
                 "published_at": article.get("published_at"),
                 "published_timezone": article.get("published_timezone"),
                 "title": article.get("title"),
-                "source": (article.get("source") or {}).get("name"),
+                "publisher": (article.get("publisher") or {}).get("name"),
                 "country": (article.get("country") or {}).get("iso_2"),
                 "language": (article.get("language") or {}).get("code"),
-                "topics": "; ".join(t.get("name", "") for t in article.get("macro_categories") or []),
+                "topics": "; ".join(t.get("name", "") for t in article.get("topics") or []),
                 "url": article.get("url"),
             }
         )

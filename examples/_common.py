@@ -15,7 +15,7 @@ def add_filters(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--country", help="ISO codes, comma-separated: JP or JPN,KOR")
     parser.add_argument("--language", help="ISO 639-1 codes, comma-separated: ja,en")
     parser.add_argument("--topic", help="topic keys, comma-separated: politics,business")
-    parser.add_argument("--source", help="publisher keys, comma-separated (see /metadata/sources)")
+    parser.add_argument("--publisher", help="publisher keys, comma-separated (see /metadata/publishers)")
     parser.add_argument("--from", dest="from_date", metavar="YYYY-MM-DD", help="earliest date (default: last day)")
     parser.add_argument("--to", dest="to_date", metavar="YYYY-MM-DD", help="latest date")
     parser.add_argument(
@@ -28,8 +28,8 @@ def filters_from(args: argparse.Namespace) -> dict[str, Any]:
         "keywords": args.keywords,
         "country": args.country,
         "language": args.language,
-        "macro_category": args.topic,
-        "source": args.source,
+        "topic": args.topic,
+        "publisher": args.publisher,
         "from_date": args.from_date,
         "to_date": args.to_date,
         "sort": args.sort,
@@ -56,10 +56,10 @@ def print_page(result: dict[str, Any]) -> None:
     if not articles:
         print("No articles matched. Searches cover the last day unless you pass --from/--to.")
     for article in articles:
-        source = (article.get("source") or {}).get("name") or "unknown publisher"
+        publisher = (article.get("publisher") or {}).get("name") or "unknown publisher"
         country = (article.get("country") or {}).get("name") or ""
         print(f"• {article['title']}")
-        print(f"  {source}, {country} | {published(article)}")
+        print(f"  {publisher}, {country} | {published(article)}")
         print(f"  {article['url']}")
 
     print()

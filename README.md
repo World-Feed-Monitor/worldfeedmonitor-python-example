@@ -74,17 +74,17 @@ with WfmClient.from_env() as wfm:  # reads WFM_API_KEY / WFM_API_SECRET (or .env
     page = wfm.search(keywords="climate", country=["BR", "AR"], from_date="2026-10-27")
 
     for article in page["data"]:
-        print(article["published_at_utc"], article["source"]["name"], article["title"], article["url"])
+        print(article["published_at_utc"], article["publisher"]["name"], article["title"], article["url"])
 
     print(page["meta"]["total_items"], "articles,", page["meta"]["total_pages"], "pages")
 ```
 
 | Method | Request |
 | --- | --- |
-| `search(page=1, **filters)` | `GET /v1/feeds/search`: one page of 25 articles |
+| `search(page=1, **filters)` | `GET /v1/articles/search`: one page of 25 articles |
 | `latest(country=, language=, topic=, page=1)` | The same search, newest first (there's no separate "latest" endpoint) |
 | `pages(max_pages=N, **filters)` | Page after page of one search, stopping at the last page or after `N` |
-| `metadata(name, **params)` | `GET /v1/metadata/{name}`, e.g. `"countries"`, `"languages"`, `"macro-categories"`, `"sources"` |
+| `metadata(name, **params)` | `GET /v1/metadata/{name}`, e.g. `"countries"`, `"languages"`, `"topics"`, `"publishers"` |
 
 Authentication is **HTTP Basic**: the API key is the username and the API secret is the password. `httpx` builds the header, and the client never prints it.
 
@@ -96,11 +96,11 @@ Authentication is **HTTP Basic**: the API key is the username and the API secret
 | `title` | `"election"` | Words in the title only |
 | `country` | `"JP"`, `["DE", "FR"]` | ISO 3166-1 alpha-2 or alpha-3 |
 | `language` | `"ja"` | ISO 639-1 |
-| `macro_category` | `"politics"` | A topic key, from `metadata("macro-categories")` |
-| `source` | `"<publisher key>"` | From `metadata("sources")` |
+| `topic` | `"politics"` | A topic key, from `metadata("topics")` |
+| `publisher` | `"<publisher key>"` | From `metadata("publishers")` |
 | `continent`, `continent_region` | | Keys from `metadata("continents")` |
-| `source_type`, `sector` | | What the publisher is, and what it covers |
-| `publisher_category` | | The publisher's own category keys |
+| `publisher_type`, `sector` | | What the publisher is, and what it covers |
+| `original_category` | | The publisher's own category keys |
 | `has_image` | `True` | Only articles with (or without) an image |
 | `from_date`, `to_date` | `"2026-10-27"` | `YYYY-MM-DD`. **Without dates, a search covers the last day.** |
 | `sort` | `"desc"` | `relevance` (the default with keywords), `desc` (newest first, the default otherwise) or `asc` |
@@ -111,7 +111,7 @@ The API ignores a filter name it doesn't know, so a typo would quietly widen you
 
 ### What each article contains
 
-`title`, `url` (the original article), `content` (a plain-text summary), `author`, `image`, `source` (`key`, `name`, `url`), `country` (`iso_2`, `iso_3`, `name`), `language` (`code`, `name`), `categories`, `macro_categories`, and three times:
+`title`, `url` (the original article), `content` (a plain-text summary), `author`, `image`, `publisher` (`key`, `name`, `url`), `country` (`iso_2`, `iso_3`, `name`), `language` (`code`, `name`), `original_categories` (the publisher's own categories), `topics` (each with a `score` and `confidence`), and three times:
 
 - `published_at`: the publisher's own clock, `YYYY-MM-DD HH:MM:SS`;
 - `published_timezone`: that clock's zone;
@@ -127,7 +127,7 @@ Results come 25 to a page. `meta` gives `current_page`, `total_pages`, `has_next
 
 ## CSV and JSON export
 
-- **CSV:** one row per article with `published_at_utc`, `published_at`, `published_timezone`, `title`, `source`, `country`, `language`, `topics` and `url`.
+- **CSV:** one row per article with `published_at_utc`, `published_at`, `published_timezone`, `title`, `publisher`, `country`, `language`, `topics` and `url`.
 - **JSON:** `{"filters": …, "articles": […]}`, with each article exactly as the API returned it.
 
 Exported files are git-ignored (`*.csv`, `*.json`).
