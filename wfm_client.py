@@ -24,19 +24,19 @@ import httpx
 
 API_URL = "https://api.worldfeedmonitor.com/v1"
 
-# The filters GET /feeds/search accepts. The API silently ignores a name it does
+# The filters GET /articles/search accepts. The API silently ignores a name it does
 # not know, so this client refuses one instead: a typo should fail loudly.
 SEARCH_FILTERS = {
     "keywords",  # words in the title or text
     "title",  # words in the title only
     "country",  # ISO 3166-1 alpha-2 or alpha-3: "JP" or "JPN"
     "language",  # ISO 639-1: "ja"
-    "macro_category",  # topic key: "politics"
-    "publisher_category",  # the publisher's own category
+    "topic",  # topic key: "politics"
+    "original_category",  # the publisher's own category
     "continent",
     "continent_region",
-    "source",  # publisher key or uuid, from /metadata/sources
-    "source_type",
+    "publisher",  # publisher key or uuid, from /metadata/publishers
+    "publisher_type",
     "sector",
     "has_image",  # True / False
     "from_date",  # YYYY-MM-DD; without dates a search covers the last day
@@ -141,7 +141,7 @@ class WfmClient:
     # ------------------------------------------------------------------ endpoints
 
     def search(self, *, page: int = 1, **filters: Any) -> dict[str, Any]:
-        """One page (25 articles) of GET /feeds/search. Returns {"meta": ..., "data": [...]}."""
+        """One page (25 articles) of GET /articles/search. Returns {"meta": ..., "data": [...]}."""
         unknown = set(filters) - SEARCH_FILTERS
         if unknown:
             raise TypeError(f"Unknown search filter(s): {', '.join(sorted(unknown))}.")
@@ -149,14 +149,14 @@ class WfmClient:
         params = {name: _param(value) for name, value in filters.items() if value not in (None, "", [], ())}
         if page != 1:
             params["page"] = page
-        return self._get("/feeds/search", params)
+        return self._get("/articles/search", params)
 
     def latest(self, *, country: Any = None, language: Any = None, topic: Any = None, page: int = 1) -> dict[str, Any]:
         """The newest articles from the last day.
 
         The REST API has no separate endpoint for this: it is a search, newest first.
         """
-        return self.search(sort="desc", country=country, language=language, macro_category=topic, page=page)
+        return self.search(sort="desc", country=country, language=language, topic=topic, page=page)
 
     def pages(self, *, max_pages: int, **filters: Any) -> Iterator[dict[str, Any]]:
         """Page after page of a search, stopping at the last page or after max_pages, whichever comes first.
@@ -172,7 +172,7 @@ class WfmClient:
                 return
 
     def metadata(self, name: str, **params: Any) -> dict[str, Any]:
-        """A metadata list such as "countries", "languages", "macro-categories" or "sources". Each call counts."""
+        """A metadata list such as "countries", "languages", "topics" or "publishers". Each call counts."""
         return self._get(
             f"/metadata/{name}", {key: _param(value) for key, value in params.items() if value is not None}
         )

@@ -28,7 +28,7 @@ def article(n: int, **overrides: Any) -> dict[str, Any]:
         "published_at": "2026-11-03 09:12:00",
         "published_timezone": "Asia/Tokyo",
         "published_at_utc": "2026-11-03T00:12:00Z",
-        "source": {
+        "publisher": {
             "uuid": "s-1",
             "key": "example-daily-jp",
             "name": "Example Daily",
@@ -36,8 +36,8 @@ def article(n: int, **overrides: Any) -> dict[str, Any]:
         },
         "country": {"uuid": "c-1", "iso_2": "JP", "iso_3": "JPN", "name": "Japan"},
         "language": {"uuid": "l-1", "name": "Japanese", "local_name": "日本語", "code": "ja", "locale": "ja_jp"},
-        "categories": [],
-        "macro_categories": [{"uuid": "m-1", "key": "technology", "name": "Technology"}],
+        "original_categories": [],
+        "topics": [{"uuid": "m-1", "key": "technology", "name": "Technology", "score": 0.9, "confidence": 0.8}],
         **overrides,
     }
 
@@ -61,7 +61,7 @@ class FakeApi:
         if self.responses:
             return self.responses.pop(0)
 
-        if request.url.path == "/v1/feeds/search":
+        if request.url.path == "/v1/articles/search":
             page = int(request.url.params.get("page", 1))
             pages = max(1, -(-self.total // 25))
             count = max(0, min(25, self.total - (page - 1) * 25))
